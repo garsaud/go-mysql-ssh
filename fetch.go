@@ -10,6 +10,10 @@ import (
 	"strings"
 )
 
+var (
+	PrivateKeyFilename string = "ssh.pem"
+)
+
 func Fetch(uri string, query string, callback func(row *sql.Rows)) error {
 	mysqlDb, err := sql.Open("mysql", uri)
 	if err != nil { return err }
@@ -26,7 +30,7 @@ func Fetch(uri string, query string, callback func(row *sql.Rows)) error {
 }
 
 func FetchSSH(sshUri string, uri string, query string, callback func(row *sql.Rows)) error {
-	pemBytes, err := ioutil.ReadFile("ssh.pem")
+	pemBytes, err := ioutil.ReadFile(PrivateKeyFilename)
 	if err != nil { return err }
 	signer, err := ssh.ParsePrivateKey(pemBytes)
 	if err != nil { return err }
