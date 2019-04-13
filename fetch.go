@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func fetch(uri string, query string, callback func(row *sql.Rows)) error {
+func fetch(uri string, query string, callback func(row Row)) error {
 	db, err := sql.Open("mysql", uri)
 	if err != nil { return err }
 	defer db.Close()
@@ -25,7 +25,7 @@ func fetch(uri string, query string, callback func(row *sql.Rows)) error {
 	return nil
 }
 
-func fetchSSH(sshuri string, uri string, query string, callback func(row *sql.Rows)) error {
+func fetchSSH(sshuri string, uri string, query string, callback func(row Row)) error {
 	pemBytes, err := ioutil.ReadFile("ssh.pem")
 	if err != nil { return err }
 	signer, err := ssh.ParsePrivateKey(pemBytes)
@@ -46,6 +46,8 @@ func fetchSSH(sshuri string, uri string, query string, callback func(row *sql.Ro
 
 	return fetch(uri, query, callback)
 }
+
+type Row *sql.Rows
 
 type ViaSSHDialer struct {
 	client *ssh.Client
